@@ -80,6 +80,8 @@ void doSimulation(Scheduler sched)
 	int current_time = 0;
 	Job current_job;
 	bool running = false;
+	int total_jobs = 0;
+	int max_queue_length = 0;
 
 	while(!done || (queueLength() > 0) || running)
 	{
@@ -93,9 +95,11 @@ void doSimulation(Scheduler sched)
 				new_job.duration = new_job_duration;
 				new_job.waitTime = 0;
 				queueAdd(new_job);
+				total_jobs++;
 			}
 		}
 
+		// Get our next job to run
 		if(!running && queueLength() > 0)
 		{
 			switch(sched)
@@ -114,22 +118,33 @@ void doSimulation(Scheduler sched)
 			}
 		}
 
+		// Run a job for the time unit
 		if(running)
 		{
 			current_job.duration--;
 			if(current_job.duration <=0)
 			{
-				running = 0;
+				running = false;
 			}
 		}
 
+		const int queue_len = queueLength();
+		if(queue_len > max_queue_length)
+		{
+			max_queue_length = queue_len;
+		}
+
+		printf("At time %i, running a job with %i remaining\n", current_time, current_job.duration);
+		printf("Current Queue:\n");
 		queuePrint(); // TODO: delete me
+		printf("\n");
 
 		queueIncrementWaitTimes();
 		current_time++;
 	}
 
-	// TODO: Print out all the things
+	printf("Ran for %i time units. Ran %i jobs. Longest queue length was %i", 
+				 current_time, total_jobs, max_queue_length);
 }
 
 
