@@ -121,19 +121,10 @@ void doSimulation(Scheduler sched)
 					current_job = queueRemoveShortest();
 					break;
 				case SJFP:
-					Job shortest_queued = queueRemoveShortest();
-					if(shortest_queued.duration < current_job.duration)
-					{
-						if(debug_prints)
-						{
-							printf("Prempting job\n");
-						}
-						queueAdd(current_job);
-						current_job = shortest_queued;
-					}
+					current_job = queueRemoveShortest();
 					break;
 			}
-			
+
 			if(current_job.duration > 0)
 			{
 				running = true;
@@ -143,6 +134,24 @@ void doSimulation(Scheduler sched)
 		// Run a job for the time unit
 		if(running)
 		{
+			if(sched == SJFP && (queueLength() > 0))
+			{
+				Job shortest_queued = queueRemoveShortest();
+				if(shortest_queued.duration < current_job.duration)
+				{
+					if(debug_prints)
+					{
+						printf("Prempting job\n");
+					}
+					queueAdd(current_job);
+					current_job = shortest_queued;
+				}
+				else
+				{
+					queueAdd(shortest_queued);
+				}
+			}
+
 			total_run_time++;
 			current_job.duration--;
 			if(current_job.duration <=0)
