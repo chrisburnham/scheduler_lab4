@@ -67,13 +67,11 @@ int jobArrives(int timestep)
  been read and the last job has been returned to the simulation.  You can use that variable to
  control when your simulation should end.
  
- INPUT shortestFirst:  boolean  true means it should run a shortest job first simulation
-                                false means it should run a first come first serve simulation
-
- NOTE: if you are a grad student, you will probably want to change the signature of this 
- function to allow for all three scheduling options. 
+ INPUT sched:  enum  SJF means it should run a shortest job first simulation
+                     FCFS means it should run a first come first serve simulation
+                     SJFP means it should run a shortest job first simulation with premption
  
- OUTPUT: void, but the function should print all the required output (see the lab information)
+ OUTPUT: void, but the function prints out info about the jobs run
  */
 void doSimulation(Scheduler sched)
 {
@@ -82,6 +80,11 @@ void doSimulation(Scheduler sched)
 	bool running = false;
 	int total_jobs = 0;
 	int max_queue_length = 0;
+	int total_run_time = 0;
+	int total_wait_time = 0;
+
+	current_job.duration = 0;
+	current_job.waitTime = 0;
 
 	while(!done || (queueLength() > 0) || running)
 	{
@@ -91,6 +94,8 @@ void doSimulation(Scheduler sched)
 			const int new_job_duration = jobArrives(current_time);
 			if(new_job_duration != 0)
 			{
+				printf("adding new job with %i duration\n", new_job_duration);
+
 				Job new_job;
 				new_job.duration = new_job_duration;
 				new_job.waitTime = 0;
@@ -121,9 +126,11 @@ void doSimulation(Scheduler sched)
 		// Run a job for the time unit
 		if(running)
 		{
+			total_run_time++;
 			current_job.duration--;
 			if(current_job.duration <=0)
 			{
+				total_wait_time += current_job.waitTime;
 				running = false;
 			}
 		}
@@ -143,8 +150,10 @@ void doSimulation(Scheduler sched)
 		current_time++;
 	}
 
-	printf("Ran for %i time units. Ran %i jobs. Longest queue length was %i", 
+	printf("Ran for %i time units. Ran %i jobs. Longest queue length was %i\n", 
 				 current_time, total_jobs, max_queue_length);
+	printf("Total runtime: %i. Total wait time: %i\n", total_run_time, total_wait_time);
+	printf("Average wait time: %d", (double)total_wait_time / (double)total_wait_time);
 }
 
 
