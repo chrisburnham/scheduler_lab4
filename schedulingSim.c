@@ -16,12 +16,12 @@
 FILE * fd;   // input file descriptor
 bool done = false;
 
-enum Scheduler
+typedef enum Scheduler
 {
 	FCFS, // First Come First Serve
 	SJF, // Shortest Job First
 	SJFP // Shortest Job First Premption
-}
+} Scheduler;
 
 /*
  Function to determine if a job is arriving during this particular time step.
@@ -79,9 +79,9 @@ void doSimulation(Scheduler sched)
 {
 	int current_time = 0;
 	Job current_job;
-	bool running = false
+	bool running = false;
 
-	while(!done || (queue_length() > 0) || running)
+	while(!done || (queueLength() > 0) || running)
 	{
 		if(!done)
 		{
@@ -96,7 +96,7 @@ void doSimulation(Scheduler sched)
 			}
 		}
 
-		if(!running && queue_length > 0)
+		if(!running && queueLength() > 0)
 		{
 			switch(sched)
 			{
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 {
 	if (argc != 3)
 	{
-		printf("Usage: %s <FCFS|SJF> <scheduleFile>\n", argv[0]);
+		printf("Usage: %s <FCFS|SJF|SJFP> <scheduleFile>\n", argv[0]);
 		exit(1);
 	}
 
