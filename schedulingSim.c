@@ -34,13 +34,13 @@ int jobArrives(int timestep)
 	static int nextDuration;
 
 	if (nextJobTime == -1)
-		{
+	{
 		if (fscanf(fd, "%d %d", &nextJobTime, &nextDuration) == EOF)
-			{
+		{
 			done = true;
-			}
-		// else have something to work with, so continue....
 		}
+		// else have something to work with, so continue....
+	}
 
 	if (nextJobTime == timestep)
 	{
@@ -48,7 +48,9 @@ int jobArrives(int timestep)
 		return nextDuration;
 	}
 	else // not up to nextJobTime yet
+	{
 		return 0;
+	}
 }
 
 /*
@@ -75,7 +77,59 @@ int jobArrives(int timestep)
  */
 void doSimulation(Scheduler sched)
 {
-// this is where you do your work!
+	int current_time = 0;
+	Job current_job;
+	bool running = false
+
+	while(!done || (queue_length() > 0) || running)
+	{
+		if(!done)
+		{
+			// Check if we have anything new
+			const int new_job_duration = jobArrives(current_time);
+			if(new_job_duration != 0)
+			{
+				Job new_job;
+				new_job.duration = new_job_duration;
+				new_job.waitTime = 0;
+				queueAdd(new_job);
+			}
+		}
+
+		if(!running && queue_length > 0)
+		{
+			switch(sched)
+			{
+				case FCFS:
+					current_job = queueRemoveFirst();
+					running = true;
+					break;
+				case SJF:
+					current_job = queueRemoveShortest();
+					running = true;
+					break;
+				case SJFP:
+					printf("not implimented yet\n");
+					break;
+			}
+		}
+
+		if(running)
+		{
+			current_job.duration--;
+			if(current_job.duration <=0)
+			{
+				running = 0;
+			}
+		}
+
+		queuePrint(); // TODO: delete me
+
+		queueIncrementWaitTimes();
+		current_time++;
+	}
+
+	// TODO: Print out all the things
 }
 
 
