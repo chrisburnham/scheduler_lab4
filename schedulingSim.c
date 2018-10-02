@@ -3,16 +3,25 @@
  *
  *  Updated on: Oct 2, 2018
  *      Author: ldamon
+ *  Updated by cburnham
  */
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "queue.h"
 
 FILE * fd;   // input file descriptor
 bool done = false;
+
+enum Scheduler
+{
+	FCFS, // First Come First Serve
+	SJF, // Shortest Job First
+	SJFP // Shortest Job First Premption
+}
 
 /*
  Function to determine if a job is arriving during this particular time step.
@@ -64,7 +73,7 @@ int jobArrives(int timestep)
  
  OUTPUT: void, but the function should print all the required output (see the lab information)
  */
-void doSimulation(bool shortestFirst)
+void doSimulation(Scheduler sched)
 {
 // this is where you do your work!
 }
@@ -89,12 +98,17 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], "FCFS") == 0)
 		{
 		printf("Running simulation for first come first serve\n");
-		doSimulation(false);
+		doSimulation(FCFS);
 		}
 	else if (strcmp(argv[1], "SJF") == 0)
 		{
 		printf("Running simulation for shortest job first\n");
-		doSimulation(true);
+		doSimulation(SJF);
+		}
+	else if (strcmp(argv[1], "SJFP") == 0)
+		{
+		printf("Running simulation for shortest job first with premption\n");
+		doSimulation(SJFP);
 		}
 	else
 		printf("Oops, bad scheduling type: %s", argv[1]);
