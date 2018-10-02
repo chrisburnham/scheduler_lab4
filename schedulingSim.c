@@ -75,6 +75,8 @@ int jobArrives(int timestep)
  */
 void doSimulation(Scheduler sched)
 {
+	bool debug_prints = false;
+
 	int current_time = 0;
 	Job current_job;
 	bool running = false;
@@ -94,7 +96,10 @@ void doSimulation(Scheduler sched)
 			const int new_job_duration = jobArrives(current_time);
 			if(new_job_duration != 0)
 			{
-				printf("adding new job with %i duration\n", new_job_duration);
+				if(debug_prints)
+				{
+					printf("adding new job with %i duration\n", new_job_duration);
+				}
 
 				Job new_job;
 				new_job.duration = new_job_duration;
@@ -111,15 +116,27 @@ void doSimulation(Scheduler sched)
 			{
 				case FCFS:
 					current_job = queueRemoveFirst();
-					running = true;
 					break;
 				case SJF:
 					current_job = queueRemoveShortest();
-					running = true;
 					break;
 				case SJFP:
-					printf("not implimented yet\n");
+					Job shortest_queued = queueRemoveShortest();
+					if(shortest_queued.duration < current_job.duration)
+					{
+						if(debug_prints)
+						{
+							printf("Prempting job\n");
+						}
+						queueAdd(current_job);
+						current_job = shortest_queued;
+					}
 					break;
+			}
+			
+			if(current_job.duration > 0)
+			{
+				running = true;
 			}
 		}
 
@@ -141,10 +158,14 @@ void doSimulation(Scheduler sched)
 			max_queue_length = queue_len;
 		}
 
-		printf("At time %i, running a job with %i remaining\n", current_time, current_job.duration);
-		printf("Current Queue:\n");
-		queuePrint(); // TODO: delete me
-		printf("\n");
+		if(debug_prints)
+		{
+			printf("At time %i, running a job with %i remaining\n", 
+				     current_time, current_job.duration);
+			printf("Current Queue:\n");
+			queuePrint(); 
+			printf("\n");
+		}
 
 		queueIncrementWaitTimes();
 		current_time++;
@@ -152,8 +173,10 @@ void doSimulation(Scheduler sched)
 
 	printf("Ran for %i time units. Ran %i jobs. Longest queue length was %i\n", 
 				 current_time, total_jobs, max_queue_length);
-	printf("Total runtime: %i. Total wait time: %i\n", total_run_time, total_wait_time);
-	printf("Average wait time: %f\n", ((double)total_wait_time / (double)total_jobs));
+	printf("Total runtime: %i. Total wait time: %i\n", 
+		     total_run_time, total_wait_time);
+	printf("Average wait time: %f\n", 
+		    ((double)total_wait_time / (double)total_jobs));
 }
 
 
