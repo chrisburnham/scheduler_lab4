@@ -153,7 +153,7 @@ void doSimulation(Scheduler sched)
 	printf("Ran for %i time units. Ran %i jobs. Longest queue length was %i\n", 
 				 current_time, total_jobs, max_queue_length);
 	printf("Total runtime: %i. Total wait time: %i\n", total_run_time, total_wait_time);
-	printf("Average wait time: %d", (double)total_wait_time / (double)total_wait_time);
+	printf("Average wait time: %d\n", (double)total_wait_time / (double)total_jobs);
 }
 
 
