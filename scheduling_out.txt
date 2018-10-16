@@ -1,0 +1,14 @@
+Running simulation for first come first serve
+Ran for 103478 time units. Ran 10000 jobs. Longest queue length was 226
+Total runtime: 103402. Total wait time: 11812943
+Average wait time: 1181.294300
+
+Running simulation for shortest job first
+Ran for 103478 time units. Ran 10000 jobs. Longest queue length was 47
+Total runtime: 103402. Total wait time: 2322355
+Average wait time: 232.235500
+
+Running simulation for shortest job first with premption
+Ran for 103478 time units. Ran 10000 jobs. Longest queue length was 46
+Total runtime: 103402. Total wait time: 2252130
+Average wait time: 225.213000
